@@ -44,9 +44,9 @@ UseUTF8 = 1
 
 
 [Unit1]
-FileName = index.html
+FileName = functions.hpp
 CompileCpp = 0
-Folder = 其他文件
+Folder = 头文件
 Compile = 0
 Link = 0
 Priority = 1000
@@ -77,11 +77,11 @@ SyncProduct = 1
 
 
 [Unit2]
-FileName = functions.hpp
-CompileCpp = 0
-Folder = 头文件
-Compile = 0
-Link = 0
+FileName = main.cpp
+CompileCpp = 1
+Folder = 源文件
+Compile = 1
+Link = 1
 Priority = 1000
 OverrideBuildCmd = 0
 BuildCmd = 
@@ -103,16 +103,16 @@ RealEncoding = UTF-8
 
 
 [Unit4]
-FileName = main.cpp
+FileName = index.html
 CompileCpp = 1
-Folder = 源文件
-Compile = 1
-Link = 1
+Folder = 其他文件
+Compile = 0
+Link = 0
 Priority = 1000
 OverrideBuildCmd = 0
 BuildCmd = 
 FileEncoding = PROJECT
-RealEncoding = ASCII
+RealEncoding = UTF-8
 
 
 [CompilerSettings]

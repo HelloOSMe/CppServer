@@ -65,9 +65,6 @@ int main() {
 			break;
 		}
 		cout<<GetRequestClass(recv_buf)<<" "<<GetRequestPath(recv_buf)<<" "<<GetHttpVersion(recv_buf)<<endl;
-		if(GetRequestClass(recv_buf)=="POST"){
-			cout<<"Recv:\n"<<recv_buf<<endl<<endl;
-		}
 		string send_data=ReturnFunc(GetRequestPath(recv_buf),"200 OK",recv_buf);
 		send(client_socket, send_data.c_str(),send_data.size(), 0);
 		closesocket(client_socket);

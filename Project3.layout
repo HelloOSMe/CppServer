@@ -1,22 +1,23 @@
 [
     {
-        "caretX": 33,
-        "caretY": 4,
-        "filename": "C:/Users/Lenovo/Documents/projects/Project3/index.html",
-        "focused": false,
-        "isOpen": false,
-        "leftChar": 1,
-        "topLine": 1
-    },
-    {
         "caretX": 35,
         "caretY": 86,
         "filename": "C:/Users/Lenovo/Documents/projects/Project3/functions.hpp",
-        "focused": true,
+        "focused": false,
         "isOpen": true,
         "leftChar": 1,
         "order": 2,
-        "topLine": 82
+        "topLine": 73
+    },
+    {
+        "caretX": 103,
+        "caretY": 67,
+        "filename": "C:/Users/Lenovo/Documents/projects/Project3/main.cpp",
+        "focused": true,
+        "isOpen": true,
+        "leftChar": 1,
+        "order": 0,
+        "topLine": 56
     },
     {
         "caretX": 3,
@@ -29,13 +30,12 @@
         "topLine": 211
     },
     {
-        "caretX": 18,
-        "caretY": 69,
-        "filename": "C:/Users/Lenovo/Documents/projects/Project3/main.cpp",
+        "caretX": 33,
+        "caretY": 4,
+        "filename": "C:/Users/Lenovo/Documents/projects/Project3/index.html",
         "focused": false,
-        "isOpen": true,
+        "isOpen": false,
         "leftChar": 1,
-        "order": 0,
-        "topLine": 56
+        "topLine": 1
     }
 ]
