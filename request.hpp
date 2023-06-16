@@ -1,6 +1,13 @@
 #ifndef _OSSERVER_REQUEST_HPP
 #define _OSSERVER_REQUEST_HPP
 #include "functions.hpp"
+#include "fileclass_db.hpp"
+const string ProgramVersion="v1.0.0";
+const string ProgramName="CppServer";
+extern void printlog(string s){
+	cout<<"["<<GetFormatTime()<<"] ";
+	cout<<s<<endl;
+}
 extern string GetFileClass(string fn){
 	string s2="",s3="";
 	int i=0;
@@ -11,41 +18,12 @@ extern string GetFileClass(string fn){
 	for(i=s2.size()-1;i>=0;i--){s3.push_back(s2[i]);}
 	return s3;
 }
-extern string FileClassDb(string s){
-	s=all_to_small(s);
-	if(s=="txt"||s=="log"){
-		return "text/text";
-	}
-	if(s=="html"||s=="htm"){
-		return "text/html";
-	}
-	if(s=="css"){
-		return "text/css";
-	}
-	if(s=="js"){
-		return "application/javascript";
-	}
-	if(s=="json"){
-		return "application/json";
-	}
-	if(s=="png"){
-		return "image/png";
-	}
-	if(s=="jpg"||s=="jpeg"){
-		return "image/jpeg";
-	}
-	if(s=="webp"){
-		return "image/webp";
-	}
-	if(s=="ico"||s=="icon"){
-		return "image/x-icon";
-	}
-	return "text/text";
-}
+
 extern std::string GetRequestClass(std::string s){
 	//POST,GET...
 	std::string j="";
 	for(int i=0;s[i]!=' ';i++){
+		if(s[i]=='\r'){continue;}
 		j.push_back(s[i]);
 	}
 	return j;
@@ -56,6 +34,7 @@ extern std::string GetRequestPath(std::string s){
 	i++;
 	std::string j="";
 	for(;s[i]!=' ';i++){
+		if(s[i]=='\r'){continue;}
 		j.push_back(s[i]);
 	}
 	return j;
@@ -68,6 +47,7 @@ extern std::string GetHttpVersion(std::string s){
 	i++;
 	std::string j="";
 	for(;s[i]!='\n';i++){
+		if(s[i]=='\r'){continue;}
 		j.push_back(s[i]);
 	}
 	return j;
@@ -81,6 +61,7 @@ extern std::string GetElement(std::string str,std::string cls){
 	bool jl=false;
 	std::string cl="";
 	for(;i<str.size();i++){
+		if(str[i]=='\r'){continue;}
 		if(str[i]==':'){
 			clas=cl;
 			cl.clear();
@@ -138,6 +119,23 @@ extern string GetPostContent(string s){
 	}
 	return s2;
 }
+extern string ChangeThing(string codes,string rcv,string ip){
+	for(int i=0;i<codes.size();i++){
+		if(codes.substr(i,i+5)=="{$IP}"){
+			codes.erase(i,i+5);
+			codes.insert(i,ip);
+		}else if(codes.substr(i,i+9)=="{$HEADER("){
+			codes.erase(i,i+9);
+			int j=i;string tmp="";
+			for(;i<codes.size()&&codes[i]!=')';i++){
+				tmp.push_back(codes[i]);
+			}
+			codes.erase(i,i+2);
+			codes.insert(i,GetElement(tmp,rcv));
+		}
+	}
+	return codes;
+}
 extern map<string,string> TidyUpPostClass(string s,string content_type){
 	map<string,string> mp;
 	mp.clear();
@@ -163,10 +161,12 @@ extern map<string,string> TidyUpPostClass(string s,string content_type){
 			}
 			mp[head]=body;
 		}
+	}else if(content_type=="multipart/form-data"){
+		
 	}
 	return mp;
 }
-extern string ReturnFunc(string path,string retcode,const char* requ){
+extern string ServerMain(string path,string retcode,string r,SOCKET client_socket,string clientip){
 	string path2=GetFilePath(path),fclass=GetFileClass(path);
 	if(path2[0]=='/'){
 		path2="."+path2;
@@ -178,6 +178,7 @@ extern string ReturnFunc(string path,string retcode,const char* requ){
 		path2="./index.html";
 	}
 	ifstream fin;
+	bool accepted=false;
 	fin.open(path2.c_str(),ios::binary);
 	string fct=FileClassDb(GetFileClass(path2));
 	string s="",content="";
@@ -185,7 +186,7 @@ extern string ReturnFunc(string path,string retcode,const char* requ){
 		fct="text/html";
 		fin.open("404.html");
 		if(!fin.is_open()){
-			content="<html><head><title>404 Not Found</titie><style>body{display:flex;margin:0;}html,body{width:100%;height:100%}.ct{margin:auto;}</style></head>";//head
+			content="<html><head><title>404 Not Found</title><style>body{display:flex;margin:0;}html,body{width:100%;height:100%}.ct{margin:auto;}</style></head>";//head
 			content+="<body><div class=\"ct\"><h1>404 Not Found</h1><p align=\"center\">Path:"+path+"</p></div></body></html>";
 		}else{
 			while(getline(fin,s)){
@@ -194,30 +195,38 @@ extern string ReturnFunc(string path,string retcode,const char* requ){
 		}
 		retcode="404 Not Found";
 	}else{
+		accepted=true;
+	}
+	//结束读取文件，开始写入响应头
+	string senddata="";
+	
+	//HTTP/1.1 200 OK
+	senddata=plusstr(senddata,plusstr(GetHttpVersion(r)," "+retcode+"\n"));
+	//Content-Type: text/html
+	//Cache-Control:private
+	//Date
+	//Host
+	//Server
+	senddata=plusstr(senddata,"Cache-Control: private\n");
+	senddata=plusstr(senddata,"Content-Type: "+fct+";charset=utf-8\n");
+	senddata=plusstr(senddata,"Date: "+GetFormatTime()+"\n");
+	senddata=plusstr(senddata,"Host: "+(GetElement(r,"Host")==""?GetElement(r,":Authority:"):GetElement(r,"Host"))+"\n");
+	senddata=plusstr(senddata,"Server: "+ProgramName+"/"+ProgramVersion+"\n");
+	//<h1>你好,世界</h1>
+	senddata=plusstr(senddata,"\n");
+	senddata=plusstr(senddata,content);
+	send(client_socket, senddata.c_str(),senddata.size(), 0);
+	if(accepted){
 		while(getline(fin,s)){
+			content.clear();
 			for(int i=0;i<s.size();i++){
 				content.push_back(s[i]);
 			}
 			content.push_back('\n');
+			send(client_socket, content.c_str(),content.size(), 0);
 		}
 	}
-	//结束读取文件，开始写入响应头
-	string r=char_to_str(requ);
-	string senddata="";
-	
-	//HTTP/1.1 200 OK
-	senddata+=GetHttpVersion(r)+" "+retcode+"\n";
-	//Content-Type: text/html
-	//Cache-Control:private
-	//Date
-	//Server
-	senddata+="Cache-Control: private\n";
-	senddata+="Content-Type: "+fct+";charset=utf-8\n";
-	senddata+="Date: "+GetFormatTime()+"\n";
-	//
-	//<h1>你好,世界</h1>
-	senddata+="\n";
-	senddata+=content;
-	return senddata;
+	fin.close();
+	return retcode;
 }
 #endif

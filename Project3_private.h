@@ -12,12 +12,12 @@
 #define VER_BUILD	0
 #define COMPANY_NAME	""
 #define FILE_VERSION	"0.1"
-#define FILE_DESCRIPTION	"Developed using the Red Panda C++ IDE"
-#define INTERNAL_NAME	""
-#define LEGAL_COPYRIGHT	""
+#define FILE_DESCRIPTION	"A simple CPP Server Program"
+#define INTERNAL_NAME	"CppServer"
+#define LEGAL_COPYRIGHT	"Copyright 2022-2023 HelloOSMe"
 #define LEGAL_TRADEMARKS	""
 #define ORIGINAL_FILENAME	"Project3.exe"
-#define PRODUCT_NAME	"Project3"
+#define PRODUCT_NAME	"CppServer"
 #define PRODUCT_VERSION	"0.1.1.1"
 
 #endif /*Project3_private_rc*/

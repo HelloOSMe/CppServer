@@ -1,7 +1,7 @@
 [Project]
 filename = Project3.dev
-name = Project3
-UnitCount = 4
+name = CppServer
+UnitCount = 5
 Type = 1
 Ver = 3
 Includes = 
@@ -29,7 +29,7 @@ UsePrecompiledHeader = 0
 PrecompiledHeader = 
 CommandLine = 
 Folders = 
-IncludeVersionInfo = 0
+IncludeVersionInfo = 1
 SupportXPThemes = 0
 CompilerSet = 0
 StaticLink = 1
@@ -44,7 +44,7 @@ UseUTF8 = 1
 
 
 [Unit1]
-FileName = functions.hpp
+FileName = request.hpp
 CompileCpp = 0
 Folder = 头文件
 Compile = 0
@@ -65,18 +65,44 @@ LanguageID = 1033
 CharsetID = 1252
 CompanyName = 
 FileVersion = 0.1
-FileDescription = Developed using the Red Panda C++ IDE
-InternalName = 
-LegalCopyright = 
+FileDescription = A simple CPP Server Program
+InternalName = CppServer
+LegalCopyright = Copyright 2022-2023 HelloOSMe
 LegalTrademarks = 
 OriginalFilename = Project3.exe
-ProductName = Project3
+ProductName = CppServer
 ProductVersion = 0.1.1.1
 AutoIncBuildNr = 0
 SyncProduct = 1
 
 
 [Unit2]
+FileName = functions.hpp
+CompileCpp = 0
+Folder = 头文件
+Compile = 0
+Link = 0
+Priority = 1000
+OverrideBuildCmd = 0
+BuildCmd = 
+FileEncoding = PROJECT
+RealEncoding = UTF-8
+
+
+[Unit3]
+FileName = index.html
+CompileCpp = 0
+Folder = 其他文件
+Compile = 0
+Link = 0
+Priority = 1000
+OverrideBuildCmd = 0
+BuildCmd = 
+FileEncoding = PROJECT
+RealEncoding = UTF-8
+
+
+[Unit4]
 FileName = main.cpp
 CompileCpp = 1
 Folder = 源文件
@@ -89,8 +115,8 @@ FileEncoding = PROJECT
 RealEncoding = ASCII
 
 
-[Unit3]
-FileName = request.hpp
+[Unit5]
+FileName = fileclass_db.hpp
 CompileCpp = 0
 Folder = 头文件
 Compile = 0
@@ -99,20 +125,7 @@ Priority = 1000
 OverrideBuildCmd = 0
 BuildCmd = 
 FileEncoding = PROJECT
-RealEncoding = UTF-8
-
-
-[Unit4]
-FileName = index.html
-CompileCpp = 1
-Folder = 其他文件
-Compile = 0
-Link = 0
-Priority = 1000
-OverrideBuildCmd = 0
-BuildCmd = 
-FileEncoding = PROJECT
-RealEncoding = UTF-8
+RealEncoding = ASCII
 
 
 [CompilerSettings]

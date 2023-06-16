@@ -1,5 +1,4 @@
 #include "request.hpp"
-
 #define PORT 80
 #define  BUFFER_SIZE 8292
 #define CLIENT_IP inet_ntoa(client_addr.sin_addr)
@@ -8,17 +7,16 @@ const char* kExitFlag = "exit";
 
 
 int main() {
-	cout<<"Start at:"<<GetFormatTime()<<endl;
 	WORD winsock_version = MAKEWORD(2,2);
 	WSADATA wsa_data;
 	if (WSAStartup(winsock_version, &wsa_data) != 0) {
-		printf("Failed to init socket dll!\n");
+		printlog("Failed to init socket dll!");
 		return 1;
 	}
 	
 	SOCKET server_socket= socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (server_socket == INVALID_SOCKET) {
-		printf("Failed to create server socket!\n");
+		printlog("Failed to create server socket!");
 		return 2;
 	}
 	
@@ -28,46 +26,47 @@ int main() {
 	server_addr.sin_addr.S_un.S_addr = INADDR_ANY;
 	
 	if (bind(server_socket, (LPSOCKADDR)&server_addr, sizeof(server_addr)) == SOCKET_ERROR) {
-		printf("Failed to bind port!\n");
+		printlog("Failed to init on port "+int_to_string(PORT)+" (reason: Permission denied)");
 		return 3;
 	}
 	
 	if (listen(server_socket, 10)) {
-		printf("Failed to listen!\n");
+		printlog("Failed to listen on port "+int_to_string(PORT));
 		return 4;
 	}
 	
 	struct sockaddr_in client_addr;
 	SOCKET client_socket;
 	int client_addr_len = sizeof(client_addr);
-	printf("Server started successfully.\n");
+	printlog(ProgramName+" "+ProgramVersion+" started at port "+int_to_string(PORT)+" successfully.");
 	
 	while (true) {
 		client_socket = accept(server_socket, (SOCKADDR*)&client_addr, &client_addr_len);
 		if (client_socket == INVALID_SOCKET) {
-			printf("Failed to accept!\n");
-			return 5;
+			printlog("Failed to accept");
+			continue;
 		}
-		cout<<"["<<GetFormatTime()<<"] Connect:";
-		printf("%s " , inet_ntoa(client_addr.sin_addr));
 		
 		char recv_buf[BUFFER_SIZE+1];
 		int ret = recv(client_socket, recv_buf, BUFFER_SIZE, 0);
 		if (ret < 0) {
-			printf("Failed to receive data!\n");
-			break;
+			printlog("Failed to receive data!\n");
+			continue;
 		}
 		recv_buf[ret]=0; // correctly ends received string
 		
 		//printf("Receive\"%s\" \n", recv_buf);
 		if (strcmp(kExitFlag,recv_buf)==0) {		
-			printf("Exit!\n");
-			break;
+			printlog("Exit!\n");
+			continue;
 		}
-		cout<<GetRequestClass(recv_buf)<<" "<<GetRequestPath(recv_buf)<<" "<<GetHttpVersion(recv_buf)<<endl;
-		string send_data=ReturnFunc(GetRequestPath(recv_buf),"200 OK",recv_buf);
-		send(client_socket, send_data.c_str(),send_data.size(), 0);
+		printlog("Accepted");
+		string recvbuf=char_to_str(recv_buf);
+		string log=char_to_str(CLIENT_IP)+":"+int_to_string(PORT)+" "+GetRequestClass(recvbuf)+" "+GetRequestPath(recvbuf)+" "+GetHttpVersion(recvbuf)+" ";
+		log+="["+ServerMain(GetRequestPath(recvbuf),char_to_str("200 OK"),recvbuf,client_socket,char_to_str(CLIENT_IP))+"]";
+		printlog(log);
 		closesocket(client_socket);
+		printlog("Closed");
 	}
 	
 	

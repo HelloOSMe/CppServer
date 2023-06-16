@@ -109,4 +109,10 @@ extern string all_to_big(string s){
 	}
 	return s;
 }
+extern string plusstr(string a,string b){
+	for(int i=0;i<b.size();i++){
+		a.push_back(b[i]);
+	}
+	return a;
+}
 #endif

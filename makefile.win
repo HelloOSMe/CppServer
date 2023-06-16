@@ -1,4 +1,4 @@
-# Project: Project3
+# Project: CppServer
 # Makefile created by Red Panda C++ 2.21
 
 CPP      = g++.exe
@@ -27,7 +27,7 @@ clean: clean-custom
 $(BIN): $(OBJ)
 	$(CPP) $(LINKOBJ) -o $(BIN) $(LIBS)
 
-main.o: main.cpp
+main.o: main.cpp request.hpp functions.hpp fileclass_db.hpp
 	$(CPP) -c main.cpp -o main.o $(CXXFLAGS) 
 
 Project3_private.res: Project3_private.rc 
