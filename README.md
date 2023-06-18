@@ -8,4 +8,4 @@ A Server program made by C++
 
 # How to edit it...
 
-use Redpanda Cpp IDE
+use [Redpanda Cpp IDE](https://github.com/royqh1979/RedPanda-CPP)
