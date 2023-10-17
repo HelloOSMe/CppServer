@@ -6,6 +6,6 @@ A Server program made by C++
 2. Open `Project3.exe`.
 3. See the result at [localhost(127.0.0.1)](http://localhost/)
 
-# How to edit it...
+# Compile
 
-use [Redpanda Cpp IDE](https://github.com/royqh1979/RedPanda-CPP)
+Open as a project in [Redpanda Cpp IDE](https://github.com/royqh1979/RedPanda-CPP)
